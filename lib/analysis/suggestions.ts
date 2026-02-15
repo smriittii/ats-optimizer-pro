@@ -167,12 +167,31 @@ export function analyzeSections(resumeText: string, keywords: string[]): Section
         const hasQuant = hasQuantification(text);
 
         let keywordCount = 0;
+        const foundKeywords = new Set<string>();
         const lowerText = text.toLowerCase();
+
         for (const keyword of keywords) {
             if (lowerText.includes(keyword.toLowerCase())) {
                 keywordCount++;
+                foundKeywords.add(keyword);
             }
         }
+
+        // Determine quality based on keyword count and content quality
+        let quality: 'good' | 'medium' | 'poor' | 'unknown' = 'unknown';
+        if (words.length > 20) {
+            if (keywordCount >= 5) {
+                quality = 'good';
+            } else if (keywordCount >= 2) {
+                quality = 'medium';
+            } else {
+                quality = 'poor';
+            }
+        }
+
+        // Suggest missing keywords relevant to this section
+        const missingKeywords = keywords.filter(k => !foundKeywords.has(k));
+        const suggestedKeywords = missingKeywords.slice(0, 5);
 
         analysis[name] = {
             wordCount: words.length,
@@ -180,6 +199,8 @@ export function analyzeSections(resumeText: string, keywords: string[]): Section
             keywordDensity: words.length > 0 ? keywordCount / words.length : 0,
             hasActionVerbs: actionVerbs.length > 0,
             hasQuantification: hasQuant,
+            quality,
+            suggestedKeywords,
         };
     }
 

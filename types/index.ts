@@ -59,6 +59,8 @@ export interface SectionAnalysis {
         keywordDensity: number;
         hasActionVerbs: boolean;
         hasQuantification: boolean;
+        quality?: 'good' | 'medium' | 'poor' | 'unknown';
+        suggestedKeywords?: string[];
     };
 }
 
