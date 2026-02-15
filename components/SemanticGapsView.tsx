@@ -19,15 +19,7 @@ export default function SemanticGapsView({ analysis }: { analysis: ResumeAnalysi
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     sectionName,
-                    sectionText: analysis.text, // note: we are passing full text, ideally we should pass section text but we don't have it parsed out cleanly yet.
-                    // Wait, sectionAnalysis usually implies we extracted the text, but the current object might only have metadata.
-                    // Let's check the ResumeAnalysis type. For now, passing full text allows the prompt to extract context if needed, 
-                    // but better to pass the specific section text if we had it. 
-                    // Since we don't seem to pass section CONTENT in the analysis object (only metadata), 
-                    // we will rely on the AI to just generate GENERIC suggestions based on the missing keywords and section name.
-                    // OR we can pass the full text and ask it to find the section.
-                    // Let's pass full text for context.
-                    sectionText: analysis.text,
+                    sectionText: analysis.text || '',
                     missingKeywords
                 })
             });
@@ -95,8 +87,8 @@ export default function SemanticGapsView({ analysis }: { analysis: ResumeAnalysi
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${quality === 'good' ? 'bg-success-50 text-success-700 border-success-200' :
-                                            quality === 'medium' ? 'bg-warning-50 text-warning-700 border-warning-200' :
-                                                'bg-danger-50 text-danger-700 border-danger-200'
+                                        quality === 'medium' ? 'bg-warning-50 text-warning-700 border-warning-200' :
+                                            'bg-danger-50 text-danger-700 border-danger-200'
                                         }`}>
                                         {hasContent ? (
                                             quality === 'good' ? 'Excellent' :

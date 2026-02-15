@@ -8,11 +8,12 @@ import SemanticGapsView from './SemanticGapsView';
 
 // Remove local SemanticGapsView function
 
-analysis: ResumeAnalysis;
-onRemoveKeyword ?: (keyword: string) => void;
-removedKeywords ?: Set<string>;
-onDismissATSIssue ?: (issue: string) => void;
-dismissedIssues ?: Set<string>;
+interface AnalysisTabsProps {
+    analysis: ResumeAnalysis;
+    onRemoveKeyword?: (keyword: string) => void;
+    removedKeywords?: Set<string>;
+    onDismissATSIssue?: (issue: string) => void;
+    dismissedIssues?: Set<string>;
 }
 
 type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'semantic';
