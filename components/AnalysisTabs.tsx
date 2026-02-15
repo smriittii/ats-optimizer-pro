@@ -1,12 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import type { ResumeAnalysis } from '@/types';
+import KeywordList from './KeywordList';
 import SemanticGapsView from './SemanticGapsView';
-
-// ... (keep existing imports)
-
-// ... (keep AnalysisTabs component)
-
-// Remove local SemanticGapsView function
 
 interface AnalysisTabsProps {
     analysis: ResumeAnalysis;
