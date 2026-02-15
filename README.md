@@ -82,32 +82,47 @@ npm start
 
 **Final Score = Weighted Average of 5 Components**
 
-1. **Keyword Match (40%)**:
+Optimized to match industry standards (Jobscan-style) - encouraging but accurate!
+
+1. **Keyword Match (50%)**:
    - Extracts top 40 keywords from job description
    - Uses unigrams, bigrams, and trigrams
    - Removes stopwords for accuracy
-   - Scores: matched keywords / total keywords
+   - **Score boost curve**: Rewards even moderate matches generously
+   - 60%+ keyword match = 75+ score
 
-2. **Semantic Similarity (25%)**:
+2. **Semantic Similarity (20%)**:
    - TF-IDF vectorization of both documents
    - Cosine similarity calculation
+   - **Boosted scoring**: Rewards contextual alignment
    - 100% local (no embeddings API needed)
 
 3. **Required Skills Coverage (15%)**:
    - Detects "required", "must have", "minimum qualifications" sections
    - Extracts and matches technical skills
    - Includes skill variations (e.g., "JS" = "JavaScript")
+   - **Generous scoring**: 60%+ coverage = good score
 
 4. **Keyword Distribution Quality (10%)**:
    - Checks keyword density per section
-   - Penalizes keyword stuffing (>15% density)
+   - Penalizes excessive stuffing (>20% density)
    - Rewards even distribution across sections
+   - **Score floor**: Minimum 70/100
 
-5. **ATS Heuristics (10%)**:
+5. **ATS Heuristics (5%)**:
    - Detects tables (problematic for ATS)
    - Checks for multi-column layouts
    - Verifies standard section headers
    - Validates appropriate resume length
+   - **Reduced impact**: These are suggestions, not dealbreakers
+   - **Score floor**: Minimum 75/100
+
+### Why This Approach?
+
+- ✅ **Realistic scores**: Matches what you'd see on Jobscan
+- ✅ **Encouraging**: Rewards good resumes appropriately
+- ✅ **Still accurate**: Identifies real areas for improvement
+- ✅ **Transparent**: You can see exactly how each component is scored
 
 ## Project Structure
 
