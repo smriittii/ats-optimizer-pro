@@ -14,15 +14,17 @@ export default function Home() {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [error, setError] = useState('');
     const [excludedKeywords, setExcludedKeywords] = useState<Set<string>>(new Set());
+    const [dismissedIssues, setDismissedIssues] = useState<Set<string>>(new Set());
 
     const handleResumeUploaded = (text: string) => {
         setResumeText(text);
         setError('');
         setAnalysis(null);
-        setExcludedKeywords(new Set()); // Reset excluded keywords
+        setExcludedKeywords(new Set());
+        setDismissedIssues(new Set());
     };
 
-    const handleAnalyze = async (additionalExcluded: string[] = []) => {
+    const handleAnalyze = async (additionalExcluded: string[] = [], additionalDismissed: string[] = []) => {
         if (!resumeText || !jobDescription) {
             setError('Please upload a resume and paste a job description');
             return;
@@ -41,6 +43,7 @@ export default function Home() {
                     resumeText,
                     jobDescription,
                     excludedKeywords: [...excludedKeywords, ...additionalExcluded],
+                    dismissedIssues: [...dismissedIssues, ...additionalDismissed],
                 }),
             });
 
@@ -63,7 +66,20 @@ export default function Home() {
         setExcludedKeywords(newExcluded);
 
         // Automatically recalculate score
-        handleAnalyze([keyword]);
+        handleAnalyze([keyword], []);
+    };
+
+    const handleDismissATSIssue = (issue: string) => {
+        const newDismissed = new Set(dismissedIssues);
+        if (newDismissed.has(issue)) {
+            newDismissed.delete(issue);
+        } else {
+            newDismissed.add(issue);
+        }
+        setDismissedIssues(newDismissed);
+
+        // Automatically recalculate score
+        handleAnalyze([], [issue]);
     };
 
     return (
@@ -127,21 +143,26 @@ export default function Home() {
                     </button>
                 </div>
 
-                {/* Excluded Keywords Info */}
-                {excludedKeywords.size > 0 && (
+                {/* Status Info */}
+                {(excludedKeywords.size > 0 || dismissedIssues.size > 0) && (
                     <div className="mb-6 bg-primary-50 border border-primary-200 rounded-lg p-4">
                         <div className="flex items-start justify-between">
-                            <div>
-                                <p className="text-sm font-medium text-primary-900">
-                                    {excludedKeywords.size} keyword{excludedKeywords.size > 1 ? 's' : ''} removed
-                                </p>
-                                <p className="text-xs text-primary-700 mt-1">
-                                    Click X on any keyword to remove it from scoring
-                                </p>
+                            <div className="space-y-1">
+                                {excludedKeywords.size > 0 && (
+                                    <p className="text-sm font-medium text-primary-900">
+                                        ✓ {excludedKeywords.size} irrelevant keyword{excludedKeywords.size > 1 ? 's' : ''} removed
+                                    </p>
+                                )}
+                                {dismissedIssues.size > 0 && (
+                                    <p className="text-sm font-medium text-primary-900">
+                                        ✓ {dismissedIssues.size} ATS issue{dismissedIssues.size > 1 ? 's' : ''} resolved
+                                    </p>
+                                )}
                             </div>
                             <button
                                 onClick={() => {
                                     setExcludedKeywords(new Set());
+                                    setDismissedIssues(new Set());
                                     handleAnalyze();
                                 }}
                                 className="text-xs text-primary-700 hover:text-primary-900 underline"
@@ -173,6 +194,8 @@ export default function Home() {
                                 analysis={analysis}
                                 onRemoveKeyword={handleRemoveKeyword}
                                 removedKeywords={excludedKeywords}
+                                onDismissATSIssue={handleDismissATSIssue}
+                                dismissedIssues={dismissedIssues}
                             />
                         </div>
                     </div>

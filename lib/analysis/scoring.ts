@@ -14,7 +14,8 @@ import { generateSuggestions, analyzeSections } from './suggestions';
 export function calculateATSScore(
     resumeText: string,
     jobDescription: string,
-    excludedKeywords: string[] = []
+    excludedKeywords: string[] = [],
+    dismissedIssues: string[] = []
 ): ResumeAnalysis {
     // Extract keywords from job description (top 40)
     let jobKeywords = extractKeywords(jobDescription, 40);
@@ -37,8 +38,8 @@ export function calculateATSScore(
     // 4. Keyword Distribution Quality (10%)
     const distributionScore = calculateDistributionQualityScore(resumeText, jobKeywords);
 
-    // 5. ATS Heuristics (5%)
-    const heuristicsScore = calculateATSHeuristicsScore(resumeText);
+    // 5. ATS Heuristics (5%) - with dismissed issues
+    const heuristicsScore = calculateATSHeuristicsScore(resumeText, dismissedIssues);
 
     // Calculate final weighted score
     const finalScore = Math.round(
@@ -221,46 +222,68 @@ function calculateDistributionQualityScore(resumeText: string, jobKeywords: stri
 }
 
 /**
- * ATS heuristics - minimal impact
+ * ATS heuristics - minimal impact, with support for dismissed issues
  */
-function calculateATSHeuristicsScore(resumeText: string) {
-    const issues: string[] = [];
+function calculateATSHeuristicsScore(resumeText: string, dismissedIssues: string[] = []) {
+    const allIssues: string[] = [];
     const passed: string[] = [];
     let penalties = 0;
 
+    const dismissedSet = new Set(dismissedIssues);
+
+    // Check for tables
+    const tablesIssue = 'Tables detected - may not parse correctly in ATS';
     if (hasTables(resumeText)) {
-        issues.push('Tables detected - may not parse correctly in ATS');
-        penalties += 12; // Reduced
+        allIssues.push(tablesIssue);
+        if (!dismissedSet.has(tablesIssue)) {
+            penalties += 12;
+        }
     } else {
         passed.push('No tables detected');
     }
 
+    // Check for multi-column
+    const multiColIssue = 'Multi-column layout detected - may confuse ATS';
     if (hasMultiColumn(resumeText)) {
-        issues.push('Multi-column layout detected - may confuse ATS');
-        penalties += 10; // Reduced
+        allIssues.push(multiColIssue);
+        if (!dismissedSet.has(multiColIssue)) {
+            penalties += 10;
+        }
     } else {
         passed.push('Single-column layout');
     }
 
+    // Check for standard sections
     const sections = detectSections(resumeText);
     const hasStandardSections = ['experience', 'education', 'skills'].every(
         section => sections[section] && sections[section].length > 20
     );
 
+    const sectionsIssue = 'Missing one or more standard sections (Experience, Education, Skills)';
     if (!hasStandardSections) {
-        issues.push('Missing one or more standard sections (Experience, Education, Skills)');
-        penalties += 8; // Reduced
+        allIssues.push(sectionsIssue);
+        if (!dismissedSet.has(sectionsIssue)) {
+            penalties += 8;
+        }
     } else {
         passed.push('Standard sections present');
     }
 
+    // Check resume length
     const wordCount = resumeText.split(/\s+/).length;
+    const shortIssue = 'Resume may be too short (less than 200 words)';
+    const longIssue = 'Resume may be too long (over 2000 words) - consider condensing';
+
     if (wordCount < 200) {
-        issues.push('Resume may be too short (less than 200 words)');
-        penalties += 5; // Reduced
+        allIssues.push(shortIssue);
+        if (!dismissedSet.has(shortIssue)) {
+            penalties += 5;
+        }
     } else if (wordCount > 2000) {
-        issues.push('Resume may be too long (over 2000 words) - consider condensing');
-        penalties += 3; // Reduced
+        allIssues.push(longIssue);
+        if (!dismissedSet.has(longIssue)) {
+            penalties += 3;
+        }
     } else {
         passed.push('Appropriate length');
     }
@@ -269,7 +292,7 @@ function calculateATSHeuristicsScore(resumeText: string) {
 
     return {
         score,
-        issues,
+        issues: allIssues,
         passed,
     };
 }
