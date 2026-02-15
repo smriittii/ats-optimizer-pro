@@ -5,7 +5,7 @@ import { calculateATSScore } from '@/lib/analysis/scoring';
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { resumeText, jobDescription } = body;
+        const { resumeText, jobDescription, excludedKeywords } = body;
 
         if (!resumeText || !jobDescription) {
             return NextResponse.json(
@@ -14,8 +14,12 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Calculate ATS score
-        const analysis = calculateATSScore(resumeText, jobDescription);
+        // Calculate ATS score with optional excluded keywords
+        const analysis = calculateATSScore(
+            resumeText,
+            jobDescription,
+            excludedKeywords || []
+        );
 
         return NextResponse.json(analysis);
     } catch (error: any) {

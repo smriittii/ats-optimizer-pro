@@ -7,11 +7,13 @@ import SuggestionsPanel from './SuggestionsPanel';
 
 interface AnalysisTabsProps {
     analysis: ResumeAnalysis;
+    onRemoveKeyword?: (keyword: string) => void;
+    removedKeywords?: Set<string>;
 }
 
 type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'suggestions';
 
-export default function AnalysisTabs({ analysis }: AnalysisTabsProps) {
+export default function AnalysisTabs({ analysis, onRemoveKeyword, removedKeywords }: AnalysisTabsProps) {
     const [activeTab, setActiveTab] = useState<TabType>('missing');
 
     const tabs: { id: TabType; label: string; count?: number }[] = [

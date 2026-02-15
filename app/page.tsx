@@ -13,15 +13,16 @@ export default function Home() {
     const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [error, setError] = useState('');
+    const [excludedKeywords, setExcludedKeywords] = useState<Set<string>>(new Set());
 
     const handleResumeUploaded = (text: string) => {
         setResumeText(text);
         setError('');
-        // Clear analysis when new resume is uploaded
         setAnalysis(null);
+        setExcludedKeywords(new Set()); // Reset excluded keywords
     };
 
-    const handleAnalyze = async () => {
+    const handleAnalyze = async (additionalExcluded: string[] = []) => {
         if (!resumeText || !jobDescription) {
             setError('Please upload a resume and paste a job description');
             return;
@@ -39,6 +40,7 @@ export default function Home() {
                 body: JSON.stringify({
                     resumeText,
                     jobDescription,
+                    excludedKeywords: [...excludedKeywords, ...additionalExcluded],
                 }),
             });
 
@@ -53,6 +55,15 @@ export default function Home() {
         } finally {
             setIsAnalyzing(false);
         }
+    };
+
+    const handleRemoveKeyword = (keyword: string) => {
+        const newExcluded = new Set(excludedKeywords);
+        newExcluded.add(keyword);
+        setExcludedKeywords(newExcluded);
+
+        // Automatically recalculate score
+        handleAnalyze([keyword]);
     };
 
     return (
@@ -98,7 +109,7 @@ export default function Home() {
                 {/* Analyze Button */}
                 <div className="flex justify-center mb-8">
                     <button
-                        onClick={handleAnalyze}
+                        onClick={() => handleAnalyze()}
                         disabled={isAnalyzing || !resumeText || !jobDescription}
                         className="btn btn-primary px-8 py-3 text-base font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                     >
@@ -115,6 +126,31 @@ export default function Home() {
                         )}
                     </button>
                 </div>
+
+                {/* Excluded Keywords Info */}
+                {excludedKeywords.size > 0 && (
+                    <div className="mb-6 bg-primary-50 border border-primary-200 rounded-lg p-4">
+                        <div className="flex items-start justify-between">
+                            <div>
+                                <p className="text-sm font-medium text-primary-900">
+                                    {excludedKeywords.size} keyword{excludedKeywords.size > 1 ? 's' : ''} removed
+                                </p>
+                                <p className="text-xs text-primary-700 mt-1">
+                                    Click X on any keyword to remove it from scoring
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    setExcludedKeywords(new Set());
+                                    handleAnalyze();
+                                }}
+                                className="text-xs text-primary-700 hover:text-primary-900 underline"
+                            >
+                                Reset all
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Error Message */}
                 {error && (
@@ -133,7 +169,11 @@ export default function Home() {
 
                         {/* Analysis Tabs */}
                         <div className="bg-white rounded-xl shadow-md p-6">
-                            <AnalysisTabs analysis={analysis} />
+                            <AnalysisTabs
+                                analysis={analysis}
+                                onRemoveKeyword={handleRemoveKeyword}
+                                removedKeywords={excludedKeywords}
+                            />
                         </div>
                     </div>
                 )}
