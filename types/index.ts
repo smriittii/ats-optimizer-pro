@@ -61,6 +61,7 @@ export interface SectionAnalysis {
         hasQuantification: boolean;
         quality?: 'good' | 'medium' | 'poor' | 'unknown';
         suggestedKeywords?: string[];
+        foundKeywords?: string[];
     };
 }
 

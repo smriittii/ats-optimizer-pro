@@ -201,6 +201,7 @@ export function analyzeSections(resumeText: string, keywords: string[]): Section
             hasQuantification: hasQuant,
             quality,
             suggestedKeywords,
+            foundKeywords: Array.from(foundKeywords),
         };
     }
 

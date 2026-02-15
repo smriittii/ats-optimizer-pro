@@ -1,15 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import type { ResumeAnalysis } from '@/types';
-import KeywordList from './KeywordList';
+import SemanticGapsView from './SemanticGapsView';
 
-interface AnalysisTabsProps {
-    analysis: ResumeAnalysis;
-    onRemoveKeyword?: (keyword: string) => void;
-    removedKeywords?: Set<string>;
-    onDismissATSIssue?: (issue: string) => void;
-    dismissedIssues?: Set<string>;
+// ... (keep existing imports)
+
+// ... (keep AnalysisTabs component)
+
+// Remove local SemanticGapsView function
+
+analysis: ResumeAnalysis;
+onRemoveKeyword ?: (keyword: string) => void;
+removedKeywords ?: Set<string>;
+onDismissATSIssue ?: (issue: string) => void;
+dismissedIssues ?: Set<string>;
 }
 
 type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'semantic';
@@ -292,9 +295,9 @@ function SemanticGapsView({ analysis }: { analysis: ResumeAnalysis }) {
                                     <h4 className="font-semibold text-gray-900 capitalize">{sectionName}</h4>
                                 </div>
                                 <span className={`text-xs font-medium px-2 py-1 rounded ${quality === 'good' ? 'bg-success-100 text-success-800' :
-                                        quality === 'medium' ? 'bg-warning-100 text-warning-800' :
-                                            quality === 'poor' ? 'bg-danger-100 text-danger-800' :
-                                                'bg-gray-100 text-gray-800'
+                                    quality === 'medium' ? 'bg-warning-100 text-warning-800' :
+                                        quality === 'poor' ? 'bg-danger-100 text-danger-800' :
+                                            'bg-gray-100 text-gray-800'
                                     }`}>
                                     {qualityLabel}
                                 </span>
