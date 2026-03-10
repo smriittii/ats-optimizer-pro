@@ -51,11 +51,12 @@ export default function Home() {
             if (!response.ok) throw new Error('Analysis failed');
 
             const data = await response.json();
+            setIsClaudeLoading(true);
+            setClaudeAnalysis(null);
             setAnalysis(data);
 
             // Trigger Claude analysis in the background
-            setIsClaudeLoading(true);
-            setClaudeAnalysis(null);
+            
             fetch('/api/claude-analyze', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
