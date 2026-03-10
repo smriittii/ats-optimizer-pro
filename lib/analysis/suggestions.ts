@@ -159,7 +159,7 @@ function generateKeywordExample(keyword: string): string {
  */
 export function analyzeSections(resumeText: string, keywords: string[]): SectionAnalysis {
     const sections = detectSections(resumeText);
-    const analysis: SectionAnalysis = {};
+    const analysis: Record<string, SectionAnalysis> = {};
 
     for (const [name, text] of Object.entries(sections)) {
         const words = text.split(/\s+/).filter(w => w.length > 0);
