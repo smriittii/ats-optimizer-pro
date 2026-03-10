@@ -85,6 +85,7 @@ export interface ResumeAnalysis {
 export interface Suggestion {
   id: string;
   type: 'critical' | 'important' | 'nice-to-have';
+  priority: 'high' | 'medium' | 'low';
   section: string;
   original: string;
   improved: string;
