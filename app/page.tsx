@@ -218,6 +218,8 @@ export default function Home() {
                                 dismissedIssues={dismissedIssues}
                                 claudeAnalysis={claudeAnalysis}
                                 isClaudeLoading={isClaudeLoading}
+                                resumeText={resumeText}
+                                jobDescription={jobDescription}
                             />
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import ResumeOptimizer from './ResumeOptimizer';
 import { useState } from 'react';
 import type { ResumeAnalysis, ClaudeAnalysis } from '@/types';
 import KeywordList from './KeywordList';
@@ -14,9 +15,11 @@ interface AnalysisTabsProps {
     dismissedIssues?: Set<string>;
     claudeAnalysis?: ClaudeAnalysis | null;
     isClaudeLoading?: boolean;
+    resumeText: string;
+    jobDescription: string;
 }
 
-type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'semantic' | 'ai';
+type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'semantic' | 'ai' | 'optimize';
 
 export default function AnalysisTabs({
     analysis,
@@ -34,7 +37,8 @@ export default function AnalysisTabs({
         { id: 'matches', label: 'Strong Matches', count: analysis.strongMatches.length },
         { id: 'skills', label: 'Required Skills', count: analysis.breakdown.requiredSkills.missing.length },
         { id: 'semantic', label: 'Semantic Gaps', count: 0 },
-        { id: 'heuristics', label: 'ATS Checks', count: analysis.breakdown.atsHeuristics.issues.length },
+        { id: 'heuristics', label: 'ATS Checks', count: analysis.breakdown.atsHeuristics.issues.length }
+        { id: 'optimize', label: '📝 Optimize Resume' },,
         {
             id: 'ai',
             label: isClaudeLoading ? '✨ AI Insights…' : '✨ AI Insights',
@@ -65,6 +69,13 @@ export default function AnalysisTabs({
             </div>
 
             {/* Tab Content */}
+            {activeTab === 'optimize' && (
+                <ResumeOptimizer
+                    resumeText={resumeText}
+                     jobDescription={jobDescription}
+                     missingKeywords={analysis.missingKeywords}
+                />
+            )}
             <div className="min-h-[300px]">
                 {activeTab === 'missing' && (
                     <div>
