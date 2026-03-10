@@ -37,8 +37,8 @@ export default function AnalysisTabs({
         { id: 'matches', label: 'Strong Matches', count: analysis.strongMatches.length },
         { id: 'skills', label: 'Required Skills', count: analysis.breakdown.requiredSkills.missing.length },
         { id: 'semantic', label: 'Semantic Gaps', count: 0 },
-        { id: 'heuristics', label: 'ATS Checks', count: analysis.breakdown.atsHeuristics.issues.length }
-        { id: 'optimize', label: '📝 Optimize Resume' },,
+        { id: 'heuristics', label: 'ATS Checks', count: analysis.breakdown.atsHeuristics.issues.length },
+        { id: 'optimize', label: '📝 Optimize Resume' },
         {
             id: 'ai',
             label: isClaudeLoading ? '✨ AI Insights…' : '✨ AI Insights',
