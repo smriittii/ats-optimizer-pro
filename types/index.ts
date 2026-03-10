@@ -94,3 +94,23 @@ export interface Suggestion {
   example?: string;
   keywordsToAdd?: string[];
 }
+
+export interface NGram {
+  text: string;
+  count: number;
+  frequency: number;
+}
+
+export interface KeywordMatch {
+  keyword: string;
+  found: boolean;
+  importance: 'critical' | 'important' | 'nice-to-have';
+  context?: string;
+}
+
+export interface AnalysisResult {
+  score: number;
+  keywords: KeywordMatch[];
+  suggestions: Suggestion[];
+  ngrams?: NGram[];
+}
