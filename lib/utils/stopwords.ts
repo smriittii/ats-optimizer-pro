@@ -28,12 +28,37 @@ export const STOPWORDS = new Set([
     'such', 'than', 'too', 'very', 'just', 'now', 'then', 'there',
     'here', 'well', 'only', 'also', 'again', 'however', 'therefore',
 
+    // Generic action verbs (too vague to be keywords)
+    'make', 'made', 'making', 'get', 'got', 'getting', 'take', 'took',
+    'taking', 'give', 'gave', 'giving', 'use', 'used', 'using', 'find',
+    'found', 'finding', 'know', 'knew', 'knowing', 'think', 'thought',
+    'see', 'saw', 'seen', 'come', 'came', 'coming', 'want', 'wanted',
+    'look', 'looked', 'looking', 'need', 'needed', 'needs', 'feel',
+    'keep', 'kept', 'let', 'put', 'seem', 'seemed', 'ask', 'asked',
+    'show', 'showed', 'try', 'tried', 'call', 'called', 'help', 'helped',
+    'assist', 'assisted', 'manage', 'managed', 'include', 'included',
+    'ensure', 'ensured', 'provide', 'provided', 'support', 'supported',
+    'create', 'created', 'understand', 'understood', 'explore', 'explored',
+
+    // Generic adjectives (too vague)
+    'new', 'old', 'good', 'bad', 'great', 'large', 'small', 'high',
+    'low', 'next', 'last', 'long', 'little', 'own', 'right', 'big',
+    'easy', 'hard', 'free', 'real', 'best', 'sure', 'better', 'true',
+    'full', 'early', 'able', 'different', 'important', 'possible',
+    'various', 'general', 'specific', 'similar', 'additional', 'current',
+
+    // Generic business words (too vague)
+    'impact', 'innovative', 'innovation', 'solutions', 'solution',
+    'process', 'processes', 'product', 'products', 'service', 'services',
+    'business', 'businesses', 'document', 'documents', 'technology',
+    'technologies', 'members', 'managers', 'challenges', 'challenge',
+    'closely', 'proficiency', 'needs', 'assist', 'creating',
+
     // Resume-specific stopwords
     'resume', 'cv', 'curriculum', 'vitae', 'page', 'email', 'phone',
     'address', 'linkedin', 'github', 'portfolio',
 ]);
 
-// Additional common business/resume words that shouldn't be considered keywords
 export const COMMON_RESUME_WORDS = new Set([
     'experience', 'education', 'skills', 'summary', 'objective',
     'professional', 'work', 'history', 'responsibilities', 'duties',
