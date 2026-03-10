@@ -28,34 +28,6 @@ A powerful, transparent ATS (Applicant Tracking System) resume analyzer that hel
 - **mammoth** (DOCX parsing)
 - **TF-IDF** (local semantic similarity)
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm
-
-### Installation
-
-1. Clone or download this repository
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Run the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-### Production Build
-
-```bash
-npm run build
-npm start
-```
 
 ## How It Works
 
