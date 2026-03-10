@@ -157,7 +157,7 @@ function generateKeywordExample(keyword: string): string {
 /**
  * Analyze resume sections for quality
  */
-export function analyzeSections(resumeText: string, keywords: string[]): SectionAnalysis {
+export function analyzeSections(resumeText: string, keywords: string[]): Record<string, SectionAnalysis> {
     const sections = detectSections(resumeText);
     const analysis: Record<string, SectionAnalysis> = {};
 
