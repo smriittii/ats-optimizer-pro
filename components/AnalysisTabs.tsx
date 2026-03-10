@@ -29,6 +29,8 @@ export default function AnalysisTabs({
     dismissedIssues,
     claudeAnalysis,
     isClaudeLoading,
+    resumeText,
+    jobDescription,
 }: AnalysisTabsProps) {
     const [activeTab, setActiveTab] = useState<TabType>('missing');
 
