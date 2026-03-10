@@ -98,7 +98,8 @@ export interface Suggestion {
 export interface NGram {
   text: string;
   count: number;
-  frequency: number;
+  type: 'unigram' | 'bigram' | 'trigram';
+  frequency?: number;
 }
 
 export interface KeywordMatch {
