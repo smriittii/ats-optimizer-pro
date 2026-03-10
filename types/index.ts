@@ -98,7 +98,7 @@ export interface Suggestion {
 export interface NGram {
   text: string;
   count: number;
-  type: 'critical' | 'important' | 'nice-to-have' | 'keyword';
+  type: 'unigram' | 'bigram' | 'trigram';
   frequency?: number;
 }
 
