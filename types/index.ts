@@ -5,7 +5,7 @@ export interface KeywordData {
 }
 
 export interface SectionAnalysis {
-    name: string;
+    name?: string;
     startLine?: number;
     endLine?: number;
     wordCount: number;
@@ -14,7 +14,7 @@ export interface SectionAnalysis {
     hasQuantification: boolean;
     foundKeywords: string[];
     suggestedKeywords: string[];
-    quality: 'good' | 'medium' | 'poor';
+    quality: 'good' | 'medium' | 'poor' | 'unknown';
 }
 
 export interface ScoreBreakdown {
@@ -83,35 +83,35 @@ export interface ResumeAnalysis {
 }
 
 export interface Suggestion {
-  id?: string;
-  type: 'critical' | 'important' | 'nice-to-have' | 'keyword';
-  priority: 'high' | 'medium' | 'low';
-  section: string;
-  original?: string;
-  improved?: string;
-  explanation?: string;
-  recommendation: string;
-  example?: string;
-  keywordsToAdd?: string[];
+    id?: string;
+    type: 'critical' | 'important' | 'nice-to-have' | 'keyword' | 'skills' | 'structure' | 'quantification' | 'formatting';
+    priority: 'high' | 'medium' | 'low';
+    section: string;
+    original?: string;
+    improved?: string;
+    explanation?: string;
+    recommendation: string;
+    example?: string;
+    keywordsToAdd?: string[];
 }
 
 export interface NGram {
-  text: string;
-  count: number;
-  type: 'unigram' | 'bigram' | 'trigram';
-  frequency?: number;
+    text: string;
+    count: number;
+    type: 'unigram' | 'bigram' | 'trigram';
+    frequency?: number;
 }
 
 export interface KeywordMatch {
-  keyword: string;
-  found: boolean;
-  importance: 'critical' | 'important' | 'nice-to-have';
-  context?: string;
+    keyword: string;
+    found: boolean;
+    importance: 'critical' | 'important' | 'nice-to-have';
+    context?: string;
 }
 
 export interface AnalysisResult {
-  score: number;
-  keywords: KeywordMatch[];
-  suggestions: Suggestion[];
-  ngrams?: NGram[];
+    score: number;
+    keywords: KeywordMatch[];
+    suggestions: Suggestion[];
+    ngrams?: NGram[];
 }
