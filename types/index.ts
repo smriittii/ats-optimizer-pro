@@ -92,4 +92,5 @@ export interface Suggestion {
   explanation: string;
   recommendation: string;
   example?: string;
+  keywordsToAdd?: string[];
 }
