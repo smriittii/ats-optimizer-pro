@@ -81,3 +81,12 @@ export interface ResumeAnalysis {
     text?: string;
     claudeAnalysis?: ClaudeAnalysis;
 }
+
+export interface Suggestion {
+  id: string;
+  type: 'critical' | 'important' | 'nice-to-have';
+  section: string;
+  original: string;
+  improved: string;
+  explanation: string;
+}
