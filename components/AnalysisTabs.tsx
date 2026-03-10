@@ -76,7 +76,7 @@ export default function AnalysisTabs({
                                 <div className="animate-spin text-4xl mb-3">✨</div>
                                 <p className="font-medium">Claude is analysing keywords...</p>
                             </div>
-                        ) : claudeAnalysis?.keywordInsights?.filter(k => !k.inResume).length > 0 ? (
+                        ) : (claudeAnalysis?.keywordInsights?.filter(k => !k.inResume).length ?? 0) > 0 ? (
                             <>
                                 <p className="text-sm text-gray-600 mb-4">
                                     These keywords were identified by Claude AI as important for this role but are missing from your resume.
