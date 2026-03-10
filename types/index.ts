@@ -90,4 +90,6 @@ export interface Suggestion {
   original: string;
   improved: string;
   explanation: string;
+  recommendation: string;
+  example?: string;
 }
