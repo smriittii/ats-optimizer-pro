@@ -15,11 +15,14 @@ export default function Home() {
     const [error, setError] = useState('');
     const [excludedKeywords, setExcludedKeywords] = useState<Set<string>>(new Set());
     const [dismissedIssues, setDismissedIssues] = useState<Set<string>>(new Set());
+    const [claudeAnalysis, setClaudeAnalysis] = useState<any>(null);
+    const [isClaudeLoading, setIsClaudeLoading] = useState(false);
 
     const handleResumeUploaded = (text: string) => {
         setResumeText(text);
         setError('');
         setAnalysis(null);
+        setClaudeAnalysis(null);
         setExcludedKeywords(new Set());
         setDismissedIssues(new Set());
     };
@@ -36,9 +39,7 @@ export default function Home() {
         try {
             const response = await fetch('/api/analyze', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     resumeText,
                     jobDescription,
@@ -47,12 +48,30 @@ export default function Home() {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Analysis failed');
-            }
+            if (!response.ok) throw new Error('Analysis failed');
 
             const data = await response.json();
             setAnalysis(data);
+
+            // Trigger Claude analysis in the background
+            setIsClaudeLoading(true);
+            setClaudeAnalysis(null);
+            fetch('/api/claude-analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    resumeText,
+                    jobDescription,
+                    missingKeywords: data.missingKeywords ?? [],
+                }),
+            })
+                .then(r => r.json())
+                .then(claudeData => {
+                    if (!claudeData.error) setClaudeAnalysis(claudeData);
+                })
+                .catch(console.error)
+                .finally(() => setIsClaudeLoading(false));
+
         } catch (err: any) {
             setError(err.message || 'Failed to analyze resume');
         } finally {
@@ -196,6 +215,8 @@ export default function Home() {
                                 removedKeywords={excludedKeywords}
                                 onDismissATSIssue={handleDismissATSIssue}
                                 dismissedIssues={dismissedIssues}
+                                claudeAnalysis={claudeAnalysis}
+                                isClaudeLoading={isClaudeLoading}
                             />
                         </div>
                     </div>
@@ -231,7 +252,7 @@ export default function Home() {
             <footer className="mt-16 border-t border-gray-200 bg-white">
                 <div className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
                     <p className="text-center text-sm text-gray-500">
-                        100% Local • No API Costs • Privacy-Focused
+                        Powered by <span className="font-medium text-purple-600">Claude AI</span> · Local NLP analysis · Privacy-focused
                     </p>
                 </div>
             </footer>

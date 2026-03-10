@@ -47,6 +47,31 @@ export interface ScoreBreakdown {
     };
 }
 
+// ─── Claude AI Types ────────────────────────────────────────────────────────
+
+export interface KeywordInsight {
+    keyword: string;
+    tier: 'critical' | 'important' | 'nice-to-have';
+    reason: string;
+    inResume: boolean;
+}
+
+export interface SectionOptimization {
+    section: string;
+    issue: string;
+    suggestion: string;
+    rewrittenBullets: string[];
+    keywordsAdded: string[];
+}
+
+export interface ClaudeAnalysis {
+    keywordInsights: KeywordInsight[];
+    sectionOptimizations: SectionOptimization[];
+    overallFeedback: string;
+}
+
+// ─── Main Analysis ───────────────────────────────────────────────────────────
+
 export interface ResumeAnalysis {
     score: number;
     breakdown: ScoreBreakdown;
@@ -54,4 +79,5 @@ export interface ResumeAnalysis {
     strongMatches: string[];
     sectionAnalysis: Record<string, SectionAnalysis>;
     text?: string;
+    claudeAnalysis?: ClaudeAnalysis;
 }

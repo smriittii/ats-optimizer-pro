@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import type { ResumeAnalysis } from '@/types';
+import type { ResumeAnalysis, ClaudeAnalysis } from '@/types';
 import KeywordList from './KeywordList';
 import SemanticGapsView from './SemanticGapsView';
+import ClaudeInsightsPanel from './ClaudeInsightsPanel';
 
 interface AnalysisTabsProps {
     analysis: ResumeAnalysis;
@@ -11,16 +12,20 @@ interface AnalysisTabsProps {
     removedKeywords?: Set<string>;
     onDismissATSIssue?: (issue: string) => void;
     dismissedIssues?: Set<string>;
+    claudeAnalysis?: ClaudeAnalysis | null;
+    isClaudeLoading?: boolean;
 }
 
-type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'semantic';
+type TabType = 'missing' | 'matches' | 'skills' | 'heuristics' | 'semantic' | 'ai';
 
 export default function AnalysisTabs({
     analysis,
     onRemoveKeyword,
     removedKeywords,
     onDismissATSIssue,
-    dismissedIssues
+    dismissedIssues,
+    claudeAnalysis,
+    isClaudeLoading,
 }: AnalysisTabsProps) {
     const [activeTab, setActiveTab] = useState<TabType>('missing');
 
@@ -30,6 +35,11 @@ export default function AnalysisTabs({
         { id: 'skills', label: 'Required Skills', count: analysis.breakdown.requiredSkills.missing.length },
         { id: 'semantic', label: 'Semantic Gaps', count: 0 },
         { id: 'heuristics', label: 'ATS Checks', count: analysis.breakdown.atsHeuristics.issues.length },
+        {
+            id: 'ai',
+            label: isClaudeLoading ? '✨ AI Insights…' : '✨ AI Insights',
+            count: claudeAnalysis?.keywordInsights.length ?? undefined,
+        },
     ];
 
     return (
@@ -163,6 +173,23 @@ export default function AnalysisTabs({
 
                 {activeTab === 'semantic' && (
                     <SemanticGapsView analysis={analysis} />
+                )}
+
+                {activeTab === 'ai' && (
+                    <div>
+                        {(isClaudeLoading || claudeAnalysis) ? (
+                            <ClaudeInsightsPanel
+                                claudeAnalysis={claudeAnalysis ?? { keywordInsights: [], sectionOptimizations: [], overallFeedback: '' }}
+                                isLoading={isClaudeLoading}
+                            />
+                        ) : (
+                            <div className="text-center py-12 text-gray-500">
+                                <p className="text-4xl mb-3">🤖</p>
+                                <p className="font-medium">Claude AI insights not available</p>
+                                <p className="text-sm mt-1">Make sure your ANTHROPIC_API_KEY is set in .env.local</p>
+                            </div>
+                        )}
+                    </div>
                 )}
 
                 {activeTab === 'heuristics' && (
