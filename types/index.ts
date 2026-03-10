@@ -9,6 +9,7 @@ export interface SectionAnalysis {
     startLine?: number;
     endLine?: number;
     wordCount: number;
+    keywordCount?: number;
     keywordDensity: number;
     hasActionVerbs: boolean;
     hasQuantification: boolean;
