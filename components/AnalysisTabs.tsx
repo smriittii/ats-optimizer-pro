@@ -83,7 +83,7 @@ export default function AnalysisTabs({
                                 </p>
                                 <div className="space-y-2">
                                     {['critical', 'important', 'nice-to-have'].map(tier => {
-                                        const tierKeywords = claudeAnalysis.keywordInsights.filter(
+                                        const tierKeywords = claudeAnalysis!.keywordInsights.filter(
                                             k => !k.inResume && k.tier === tier
                                         );
                                         if (tierKeywords.length === 0) return null;
