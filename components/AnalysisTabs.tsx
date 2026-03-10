@@ -30,7 +30,7 @@ export default function AnalysisTabs({
     const [activeTab, setActiveTab] = useState<TabType>('missing');
 
     const tabs: { id: TabType; label: string; count?: number }[] = [
-        { id: 'missing', label: 'Missing Keywords', count: analysis.missingKeywords.length },
+        { id: 'missing', label: 'Missing Keywords', count: claudeAnalysis?.keywordInsights?.filter(k => !k.inResume).length ?? analysis.missingKeywords.length },
         { id: 'matches', label: 'Strong Matches', count: analysis.strongMatches.length },
         { id: 'skills', label: 'Required Skills', count: analysis.breakdown.requiredSkills.missing.length },
         { id: 'semantic', label: 'Semantic Gaps', count: 0 },
@@ -71,25 +71,62 @@ export default function AnalysisTabs({
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">
                             Missing Keywords from Job Description
                         </h3>
-                        {analysis.missingKeywords.length > 0 ? (
+                        {isClaudeLoading ? (
+                            <div className="text-center py-12 text-gray-500">
+                                <div className="animate-spin text-4xl mb-3">✨</div>
+                                <p className="font-medium">Claude is analysing keywords...</p>
+                            </div>
+                        ) : claudeAnalysis?.keywordInsights?.filter(k => !k.inResume).length > 0 ? (
                             <>
-                                <p className="text-sm text-gray-600 mb-2">
-                                    These keywords appear in the job description but not in your resume.
+                                <p className="text-sm text-gray-600 mb-4">
+                                    These keywords were identified by Claude AI as important for this role but are missing from your resume.
                                 </p>
-                                <p className="text-sm text-primary-700 mb-4 font-medium">
-                                    💡 Click the ❌ button to remove irrelevant keywords and improve your score!
-                                </p>
-                                <KeywordList
-                                    keywords={analysis.missingKeywords}
-                                    type="missing"
-                                    onRemoveKeyword={onRemoveKeyword}
-                                    removedKeywords={removedKeywords}
-                                />
+                                <div className="space-y-2">
+                                    {['critical', 'important', 'nice-to-have'].map(tier => {
+                                        const tierKeywords = claudeAnalysis.keywordInsights.filter(
+                                            k => !k.inResume && k.tier === tier
+                                        );
+                                        if (tierKeywords.length === 0) return null;
+                                        return (
+                                            <div key={tier} className="mb-4">
+                                                <h4 className={`text-sm font-semibold mb-2 ${
+                                                    tier === 'critical' ? 'text-red-600' :
+                                                    tier === 'important' ? 'text-yellow-600' :
+                                                    'text-green-600'
+                                                }`}>
+                                                    {tier === 'critical' ? '🔴 Critical' : tier === 'important' ? '🟡 Important' : '🟢 Nice-to-have'}
+                                                </h4>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {tierKeywords.map((k, idx) => (
+                                                        <div key={idx} className="group relative">
+                                                            <span className={`px-3 py-1 rounded-full text-sm cursor-help ${
+                                                                tier === 'critical' ? 'bg-red-100 text-red-800' :
+                                                                tier === 'important' ? 'bg-yellow-100 text-yellow-800' :
+                                                                'bg-green-100 text-green-800'
+                                                            }`}>
+                                                                {k.keyword}
+                                                            </span>
+                                                            <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block bg-gray-800 text-white text-xs rounded p-2 w-48 z-10">
+                                                                {k.reason}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </>
+                        ) : !claudeAnalysis ? (
+                            <div className="text-center py-12 text-gray-500">
+                                <p className="text-4xl mb-3">🤖</p>
+                                <p className="font-medium">Claude AI insights not available</p>
+                                <p className="text-sm mt-1">Make sure your ANTHROPIC_API_KEY is set</p>
+                            </div>
                         ) : (
                             <div className="text-center py-12">
                                 <div className="text-success-600 text-4xl mb-3">✓</div>
-                                <p className="text-gray-600">All keywords from the job description are present in your resume!</p>
+                                <p className="text-gray-600">Claude found no missing keywords — great match!</p>
                             </div>
                         )}
                     </div>
@@ -225,8 +262,7 @@ export default function AnalysisTabs({
                                         {analysis.breakdown.atsHeuristics.issues.map((issue, idx) => {
                                             const isDismissed = dismissedIssues?.has(issue);
                                             return (
-                                                <li key={idx} className={`flex items-start p-3 rounded-lg border ${isDismissed ? 'bg-gray-50 border-gray-200 opacity-50' : 'bg-warning-50 border-warning-200'
-                                                    }`}>
+                                                <li key={idx} className={`flex items-start p-3 rounded-lg border ${isDismissed ? 'bg-gray-50 border-gray-200 opacity-50' : 'bg-warning-50 border-warning-200'}`}>
                                                     {onDismissATSIssue && (
                                                         <input
                                                             type="checkbox"
@@ -261,5 +297,3 @@ export default function AnalysisTabs({
         </div>
     );
 }
-
-// Semantic Gaps view moved to external component
