@@ -83,13 +83,13 @@ export interface ResumeAnalysis {
 }
 
 export interface Suggestion {
-  id: string;
+  id?: string;
   type: 'critical' | 'important' | 'nice-to-have' | 'keyword';
   priority: 'high' | 'medium' | 'low';
   section: string;
-  original: string;
-  improved: string;
-  explanation: string;
+  original?: string;
+  improved?: string;
+  explanation?: string;
   recommendation: string;
   example?: string;
   keywordsToAdd?: string[];
